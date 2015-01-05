@@ -13,3 +13,13 @@ A fieldtype that allows you to select a template from a dropdown.
 If you want to include a template, you may do it like this in your template:
 
 `{% include entry.fieldHandle %}`
+
+## Limit to subfolder
+
+By using the config setting **templateselectSubfolder**, you can limit the list to a subfolder of your templates folder.
+
+In general.php, add this line:
+
+̀`
+"templateselectSubfolder" => "subfolder"
+`

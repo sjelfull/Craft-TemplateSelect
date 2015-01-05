@@ -16,7 +16,16 @@ class TemplateSelect_SelectFieldType extends BaseFieldType
     public function getInputHtml($name, $value)
     {
         // Get site templates path
-        $templatesPath = craft()->path->getSiteTemplatesPath();
+        $templatesPath = $siteTemplatesPath = craft()->path->getSiteTemplatesPath();
+
+
+        // Check if the templates path is overriden by configuration
+        // TODO: Normalize path
+        $limitToSubfolder = craft()->config->get('templateselectSubfolder');
+        if ($limitToSubfolder) $templatesPath = $templatesPath . rtrim($limitToSubfolder, '/') . '/';
+
+        // Check if folder exists, or give error
+        if (! IOHelper::folderExists($templatesPath) ) throw new \InvalidArgumentException('(Template Select) Folder doesn\'t exist: ' . $templatesPath);
 
         // Get folder contents
         $templates = IOHelper::getFolderContents($templatesPath, TRUE);
@@ -36,9 +45,10 @@ class TemplateSelect_SelectFieldType extends BaseFieldType
                 $filename = $list->current();
                 
                 $filename = str_replace($templatesPath, '', $filename);
+                $filenameIncludingSubfolder = ($limitToSubfolder) ? $limitToSubfolder . $filename : $filename;
                 $isTemplate = preg_match("/(.html|.twig)$/u", $filename);
                 
-                if ($isTemplate) $filteredTemplates[$filename] = $filename;
+                if ($isTemplate) $filteredTemplates[$filenameIncludingSubfolder] = $filename;
             }
 
         // Render field
