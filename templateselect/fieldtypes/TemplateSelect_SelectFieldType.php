@@ -44,7 +44,7 @@ class TemplateSelect_SelectFieldType extends BaseFieldType
             { 
                 $filename = $list->current();
                 
-                $filename = str_replace($templatesPath, '', $filename);
+                $filename = str_replace(realpath($templatesPath), '', $filename);
                 $filenameIncludingSubfolder = ($limitToSubfolder) ? $limitToSubfolder . $filename : $filename;
                 $isTemplate = preg_match("/(.html|.twig)$/u", $filename);
                 
