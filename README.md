@@ -23,3 +23,9 @@ In general.php, add this line:
 ̀`
 "templateselectSubfolder" => "subfolder"
 `
+
+Alternatively you can provide an array to include multiple folders
+
+`
+"templateselectSubfolder" => ["subfolder1", "subfolder2"]
+`
