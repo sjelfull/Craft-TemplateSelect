@@ -15,6 +15,9 @@ class TemplateSelect_SelectFieldType extends BaseFieldType
 
     public function getInputHtml($name, $value)
     {
+        //clean up saved template name
+        $value = ltrim(str_replace(['.html', '.twig'], ['', ''], $value), '/');
+        
         // Get site templates path
         $templatesPath = $siteTemplatesPath = craft()->path->getSiteTemplatesPath();
 
@@ -39,16 +42,19 @@ class TemplateSelect_SelectFieldType extends BaseFieldType
         // Iterate over template list
         // * Remove full path 
         // * Remove folders from list
+        // * Remove file extension
         for ($list = $templates->getIterator();
             $list->valid(); $list->next()) 
             { 
                 $filename = $list->current();
-                
                 $filename = str_replace(str_replace("\\", "/", realpath($templatesPath)), '', $filename);
                 $filenameIncludingSubfolder = ($limitToSubfolder) ? $limitToSubfolder . $filename : $filename;
                 $isTemplate = preg_match("/(.html|.twig)$/u", $filename);
                 
-                if ($isTemplate) $filteredTemplates[$filenameIncludingSubfolder] = $filename;
+                if ($isTemplate) 
+                {
+                    $filteredTemplates[ltrim(str_replace(['.html', '.twig'], ['', ''], $filenameIncludingSubfolder), '/')] = ltrim(str_replace(['.html', '.twig'], ['', ''], $filename), '/');
+                }
             }
 
         // Render field
